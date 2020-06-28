@@ -11,7 +11,7 @@ import (
 type HandlerOption func(h *handler)
 
 // NewHandler takes in a story and returns the http.Handler for that story
-func NewHandler(s Story, opts ...HandlerOption) http.Handler {
+func NewHandler(s Book, opts ...HandlerOption) http.Handler {
 	h := handler{s, tmpl, defaultPathFn} // creating a default handler
 	for _, opt := range opts {
 		opt(&h)
@@ -20,7 +20,7 @@ func NewHandler(s Story, opts ...HandlerOption) http.Handler {
 }
 
 type handler struct {
-	s      Story
+	s      Book
 	t      *template.Template
 	pathFn func(r *http.Request) string
 }

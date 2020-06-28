@@ -14,7 +14,9 @@ Implementation of Choose your own adventure from gophercises, including the bonu
 **Run Commands:**
 
 - go run cmd\web\main.go (for running the web application)
-- command-line flags: --port, --file, --help/-h  
+- command-line flags: --port, --file, --help/-h
+* go run cmd\terminal\main.go (for running the command-line application)
+* command-line flags: --start, --file, --help/-h
 
 **Features:**
 
@@ -22,6 +24,7 @@ Implementation of Choose your own adventure from gophercises, including the bonu
 - Using html templates to display the story
 - Using http.Handler interface to serve the incoming requests
 - Allowing user to pass custom templates and/or path parser
+* Command-line application allows user to pass a custom starting point of the story
 
 **Packages explored:**
 
@@ -29,4 +32,5 @@ Implementation of Choose your own adventure from gophercises, including the bonu
 - "flag" - command line inputs
 - "html/template" - to render templates
 - "log" - to log events
+- "os" - to open the json file
 - "net/http" - to create server

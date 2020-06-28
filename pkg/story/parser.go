@@ -6,14 +6,14 @@ import (
 )
 
 // ParseStory decodes the json file to type: Story
-func ParseStory(r io.Reader) (story Story, err error) {
+func ParseStory(r io.Reader) (story Book, err error) {
 	d := json.NewDecoder(r)
 	err = d.Decode(&story)
 	return
 }
 
-// Story contains all the chapters that particular story can have
-type Story map[string]Chapter
+// Book contains all the chapters that particular story can have
+type Book map[string]Chapter
 
 // Chapter stores the data of a particular chapter in the story
 type Chapter struct {
