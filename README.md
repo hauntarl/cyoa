@@ -13,6 +13,20 @@ Implementation of Choose your own adventure from gophercises, including the bonu
 
 **Run Commands:**
 
+- go run cmd\web\main.go (for running the web application)
+- command-line flags: --port, --file, --help/-h  
+
 **Features:**
 
+- Parsing JSON file: **[Json To Go](https://mholt.github.io/json-to-go/)**
+- Using html templates to display the story
+- Using http.Handler interface to serve the incoming requests
+- Allowing user to pass custom templates and/or path parser
+
 **Packages explored:**
+
+- "fmt"
+- "flag" - command line inputs
+- "html/template" - to render templates
+- "log" - to log events
+- "net/http" - to create server
