@@ -5,8 +5,8 @@ import (
 	"io"
 )
 
-// ParseStory decodes the json file to type: Story
-func ParseStory(r io.Reader) (story Book, err error) {
+// Parse decodes the json file to type: Story
+func Parse(r io.Reader) (story Book, err error) {
 	d := json.NewDecoder(r)
 	err = d.Decode(&story)
 	return

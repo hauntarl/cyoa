@@ -12,27 +12,28 @@ import (
 	"hauntarl.io/gophercises/cyoa/pkg/story"
 )
 
-func main() {
-	port := flag.Int("port", 3000, "the port to start the CYOA apllication on")
-	filename := flag.String("file", "gopher.json", "JSON file for CYOA story.")
+var (
+	port  *int
+	fname *string
+)
+
+func init() {
+	port = flag.Int("port", 3000, "the port to start the CYOA application on")
+	fname = flag.String("file", "gopher.json", "JSON file for CYOA story.")
 	flag.Parse()
+	log.Printf("using the story from file %s.\n", *fname)
+}
 
-	fmt.Printf("Using the story from %s.\n", *filename)
-
-	f, err := os.Open(*filename)
+func main() {
+	f, err := os.Open(*fname)
 	if err != nil {
 		panic(err)
 	}
 
-	adventure, err := story.ParseStory(f)
+	adventure, err := story.Parse(f)
 	if err != nil {
 		panic(err)
 	}
-
-	// creating an handler with default options
-  // h := cyoa.NewHandler(adventure)
-	// fmt.Printf("Starting the server on port: %d\n", *port)
-	// log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), h))
 
 	// providing a custom template and a custom path parser for that template
 	tmpl := template.Must(template.New("").Parse(customTmpl))
@@ -44,7 +45,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/story/", h)
 
-	fmt.Printf("Starting the server on port: %d\n", *port)
+	log.Printf("starting the server on port: %d\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), mux))
 }
 
@@ -57,7 +58,7 @@ func customPathParser(r *http.Request) string {
 	return path[len("/story/"):]
 }
 
-var customTmpl = `<!DOCTYPE html>
+const customTmpl = `<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">

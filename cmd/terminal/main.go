@@ -3,23 +3,32 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"hauntarl.io/gophercises/cyoa/pkg/story"
 )
 
-func main() {
-	filename := flag.String("file", "gopher.json", "JSON file for CYOA story")
-	first := flag.String("start", "intro", "The first chapter of the story")
-	flag.Parse()
+var (
+	fname *string
+	first *string
+)
 
-	f, err := os.Open(*filename)
+func init() {
+	fname = flag.String("file", "gopher.json", "JSON file for CYOA story.")
+	first = flag.String("start", "intro", "The first chapter of the story")
+	flag.Parse()
+	log.Printf("using the story from file %s.\n", *fname)
+}
+
+func main() {
+	f, err := os.Open(*fname)
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close()
 
-	book, err := story.ParseStory(f)
+	book, err := story.Parse(f)
 	if err != nil {
 		panic(err)
 	}
@@ -32,19 +41,14 @@ func main() {
 
 func begin(book story.Book, choice string) error {
 	var count int
-	for {
+	for choice != "" {
 		count++
 		chapter, err := fetchNext(&book, choice)
 		if err != nil {
 			return err
 		}
-
 		read(chapter, count)
-
 		choice = makeAChoice(chapter)
-		if choice == "" {
-			break
-		}
 	}
 	return nil
 }
@@ -53,7 +57,7 @@ func fetchNext(book *story.Book, id string) (*story.Chapter, error) {
 	if chapter, ok := (*book)[id]; ok {
 		return &chapter, nil
 	}
-	return nil, fmt.Errorf("Chapter '%s' not found", id)
+	return nil, fmt.Errorf("chapter '%s' not found", id)
 }
 
 func read(chapter *story.Chapter, num int) {

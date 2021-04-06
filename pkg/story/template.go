@@ -6,13 +6,35 @@ import (
 	"strings"
 )
 
+var tmpl *template.Template
+
 func init() {
 	tmpl = template.Must(template.New("").Parse(defaultHandlerTmpl))
 }
 
-var tmpl *template.Template
+func defaultPathFn(r *http.Request) string {
+	path := strings.TrimSpace(r.URL.Path)
+	if path == "" || path == "/" {
+		path = "/intro"
+	}
+	return path[1:] // trimming '/' from the path
+}
 
-var defaultHandlerTmpl = `<!DOCTYPE html>
+// WithTemplate allows user to add their custom template to build http.Handler
+func WithTemplate(t *template.Template) HandlerOption {
+	return func(h *handler) {
+		h.tmpl = t
+	}
+}
+
+// WithPathParser allows user to provide a custom path parser based on their requirements
+func WithPathParser(fn func(r *http.Request) string) HandlerOption {
+	return func(h *handler) {
+		h.pathFn = fn
+	}
+}
+
+const defaultHandlerTmpl = `<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -76,25 +98,3 @@ var defaultHandlerTmpl = `<!DOCTYPE html>
     </style>
   </body>
 </html>`
-
-func defaultPathFn(r *http.Request) string {
-	path := strings.TrimSpace(r.URL.Path)
-	if path == "" || path == "/" {
-		path = "/intro"
-	}
-	return path[1:] // trimming '/' from the path
-}
-
-// WithTemplate allows user to add their custom template to build http.Handler
-func WithTemplate(t *template.Template) HandlerOption {
-	return func(h *handler) {
-		h.t = t
-	}
-}
-
-// WithPathParser allows user to provide a custom path parser based on their requirements
-func WithPathParser(fn func(r *http.Request) string) HandlerOption {
-	return func(h *handler) {
-		h.pathFn = fn
-	}
-}

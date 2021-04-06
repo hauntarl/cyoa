@@ -20,20 +20,21 @@ func NewHandler(s Book, opts ...HandlerOption) http.Handler {
 }
 
 type handler struct {
-	s      Book
-	t      *template.Template
+	book   Book
+	tmpl   *template.Template
 	pathFn func(r *http.Request) string
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := h.pathFn(r)
 
-	chapter, ok := h.s[path]
+	chapter, ok := h.book[path]
 	if !ok {
 		http.Error(w, "Chapter not found", http.StatusNotFound)
 		return
 	}
-	err := h.t.Execute(w, chapter)
+
+	err := h.tmpl.Execute(w, chapter)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "Something went wrong...", http.StatusInternalServerError)
